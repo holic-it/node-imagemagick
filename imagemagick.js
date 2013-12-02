@@ -154,12 +154,17 @@ exports.identify = function(pathOrArgs, callback) {
         result = stdout;
       } else {
         result = parseIdentify(stdout);
-        geometry = result['geometry'].split(/x/);
+        
+        try {
+          geometry = result['geometry'].split(/x/);
+          result.width = parseInt(geometry[0]);
+          result.height = parseInt(geometry[1]);
+          result.format = result.format.match(/\S*/)[0]
+          result.depth = parseInt(result.depth);
+        } catch (e) {
+          console.log('ERROR! failed to parse geometry ::: result :::' + result);  
+        }
 
-        result.format = result.format.match(/\S*/)[0]
-        result.width = parseInt(geometry[0]);
-        result.height = parseInt(geometry[1]);
-        result.depth = parseInt(result.depth);
         if (result.quality !== undefined) result.quality = parseInt(result.quality) / 100;
       }
     }
